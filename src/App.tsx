@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { IMovie } from './types';
 import { nanoid } from 'nanoid';
 
-const bootstrapTypes = ['primary', 'danger', 'warning', 'info'];
+const bootstrapTypes = ['primary', 'danger', 'info', 'success'];
 const randomType = () =>
   bootstrapTypes[Math.floor(Math.random() * bootstrapTypes.length)];
 
@@ -23,12 +23,19 @@ export const App = () => {
     setMovies((prevState) => prevState.filter((movie) => movie.id !== id));
   };
 
+  const editMovieName = (id: string, title: string) => {
+    setMovies((prevState) =>
+      prevState.map((movie) => (movie.id === id ? { ...movie, title } : movie))
+    );
+  };
+
   const moviesList = movies.map((movie) => (
     <MovieItem
       key={movie.id}
       type={randomType()}
       name={movie.title}
       onDelete={() => deleteMovie(movie.id)}
+      onChange={(title) => editMovieName(movie.id, title)}
     />
   ));
 
