@@ -21,6 +21,7 @@ export const App = () => {
     id: '',
     value: '',
   });
+  const [newJokes, setNewJokes] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,7 +31,7 @@ export const App = () => {
     };
 
     void fetchData();
-  }, []);
+  }, [newJokes]);
 
   const addMovie = (movie: IMovie) => {
     setMovies((prevState) => [...prevState, movie]);
@@ -64,7 +65,12 @@ export const App = () => {
           <ul className="list-group mt-3">{moviesList}</ul>
         </div>
         <div className="col-6">
-          <JokeItem key={jokes.id} joke={jokes} type={randomType()} />
+          <JokeItem
+            onClick={() => setNewJokes((prevState) => !prevState)}
+            key={jokes.id}
+            joke={jokes}
+            type={randomType()}
+          />
         </div>
       </div>
     </div>
