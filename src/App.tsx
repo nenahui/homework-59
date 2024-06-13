@@ -1,12 +1,15 @@
 import { MovieForm } from './components/MovieForm/MovieForm';
 import { MovieItem } from './components/MovieItem/MovieItem';
-import { useState } from 'react';
-import { IMovie } from './types';
+import { useEffect, useState } from 'react';
+import { IJoke, IMovie } from './types';
 import { nanoid } from 'nanoid';
+import { JokeItem } from './components/JokeItem/JokeItem';
 
-const bootstrapTypes = ['primary', 'danger', 'info', 'success'];
+const bootstrapTypes = ['primary', 'danger', 'info'];
 const randomType = () =>
   bootstrapTypes[Math.floor(Math.random() * bootstrapTypes.length)];
+
+const jokeUrl = 'https://api.chucknorris.io/jokes/random';
 
 export const App = () => {
   const [movies, setMovies] = useState<IMovie[]>([
@@ -14,6 +17,20 @@ export const App = () => {
     { title: 'The Basketball Diaries', id: nanoid() },
     { title: 'The Wolf of Wall Street', id: nanoid() },
   ]);
+  const [jokes, setJokes] = useState<IJoke>({
+    id: '',
+    value: '',
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(jokeUrl);
+      const data = await response.json();
+      setJokes(data);
+    };
+
+    void fetchData();
+  }, []);
 
   const addMovie = (movie: IMovie) => {
     setMovies((prevState) => [...prevState, movie]);
@@ -41,9 +58,15 @@ export const App = () => {
 
   return (
     <div className={'container-fluid mt-5'}>
-      <MovieForm onSubmit={addMovie} type={randomType()} />
-
-      <ul className="list-group mt-3">{moviesList}</ul>
+      <div className="row">
+        <div className="col-6">
+          <MovieForm onSubmit={addMovie} type={randomType()} />
+          <ul className="list-group mt-3">{moviesList}</ul>
+        </div>
+        <div className="col-6">
+          <JokeItem key={jokes.id} joke={jokes} type={randomType()} />
+        </div>
+      </div>
     </div>
   );
 };

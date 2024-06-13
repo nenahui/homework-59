@@ -6,3 +6,8 @@ export interface IMovie {
 export interface IMovieMutation {
   title: string;
 }
+
+export interface IJoke {
+  id: string;
+  value: string;
+}
