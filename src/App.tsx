@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { IJoke, IMovie } from './types';
 import { nanoid } from 'nanoid';
 import { JokeItem } from './components/JokeItem/JokeItem';
+import { NextJokeButton } from './components/NextJokeButton/NextJokeButton';
+import { PuffLoader } from 'react-spinners';
 
 const bootstrapTypes = ['primary', 'danger', 'info'];
 const randomType = () =>
@@ -17,17 +19,22 @@ export const App = () => {
     { title: 'The Basketball Diaries', id: nanoid() },
     { title: 'The Wolf of Wall Street', id: nanoid() },
   ]);
-  const [jokes, setJokes] = useState<IJoke>({
-    id: '',
-    value: '',
-  });
+  const [jokes, setJokes] = useState<IJoke[]>([]);
   const [newJokes, setNewJokes] = useState(false);
+  const [loader, setLoader] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(jokeUrl);
-      const data = await response.json();
-      setJokes(data);
+      const newJokes: IJoke[] = [];
+      setLoader(true);
+      for (let i = 0; i < 5; i++) {
+        const response = await fetch(jokeUrl);
+        const joke: IJoke = await response.json();
+        newJokes.push(joke);
+      }
+
+      setJokes(newJokes);
+      setLoader(false);
     };
 
     void fetchData();
@@ -57,6 +64,8 @@ export const App = () => {
     />
   ));
 
+  const jokesList = jokes.map((joke) => <JokeItem key={joke.id} joke={joke} />);
+
   return (
     <div className={'container-fluid mt-5'}>
       <div className="row">
@@ -65,12 +74,14 @@ export const App = () => {
           <ul className="list-group mt-3">{moviesList}</ul>
         </div>
         <div className="col-6">
-          <JokeItem
-            onClick={() => setNewJokes((prevState) => !prevState)}
-            key={jokes.id}
-            joke={jokes}
-            type={randomType()}
-          />
+          {jokesList}
+          <div className="d-flex justify-content-center align-items-center gap-3">
+            <NextJokeButton
+              type={randomType()}
+              onClick={() => setNewJokes((prevState) => !prevState)}
+            />
+            <PuffLoader color="#FFF" size={40} loading={loader} />
+          </div>
         </div>
       </div>
     </div>
