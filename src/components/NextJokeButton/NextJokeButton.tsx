@@ -8,9 +8,10 @@ interface Props {
 export const NextJokeButton: React.FC<Props> = React.memo(
   ({ type, onClick }) => {
     return (
-      <button onClick={onClick} className={`btn btn-${type}`}>
+      <button onClick={onClick} className={`btn btn-outline-${type}`}>
         Next jokes
       </button>
     );
-  }
+  },
+  (prevProps, nextProps) => prevProps.type === nextProps.type
 );

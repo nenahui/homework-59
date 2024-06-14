@@ -77,7 +77,7 @@ export const App = () => {
           {jokesList}
           <div className="d-flex justify-content-center align-items-center gap-3">
             <NextJokeButton
-              type={randomType()}
+              type={'info'}
               onClick={() => setNewJokes((prevState) => !prevState)}
             />
             <PuffLoader color="#FFF" size={40} loading={loader} />
